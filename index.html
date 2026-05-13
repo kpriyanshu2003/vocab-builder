@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lexicon — Vocabulary Trainer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./resources/style.css" />
+    <script src="./resources/script.js" defer></script>
+  </head>
+  <body>
+    <div id="app">
+      <!-- ── HEADER ── -->
+      <header>
+        <div class="brand">Lexicon <span>vocab trainer</span></div>
+        <div class="header-controls">
+          <span class="progress-pill" id="progress-text">— / — done</span>
+          <select id="day-select" disabled>
+            <option>loading…</option>
+          </select>
+        </div>
+      </header>
+
+      <!-- ── BODY ── -->
+      <div class="body">
+        <!-- Left: word list panel -->
+        <div id="word-list-panel">
+          <!-- Mobile: panel toggle bar -->
+          <button id="panel-toggle" aria-label="Toggle word list">
+            <span id="panel-toggle-label">words</span>
+            <svg
+              id="panel-chevron"
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="none"
+            >
+              <path
+                d="M2 4l4 4 4-4"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+          <div id="word-list"></div>
+        </div>
+
+        <!-- Center: main stage -->
+        <div id="stage">
+          <div id="loading-msg">loading vocab.json…</div>
+
+          <div class="word-display" id="word-display" style="display: none">
+            <div class="word-number" id="word-number"></div>
+            <div class="big-word" id="big-word"></div>
+            <div class="phonetic" id="phonetic"></div>
+            <div class="forms-strip" id="forms-strip"></div>
+
+            <!-- Desktop nav buttons (prev/next word) -->
+            <div class="nav-arrows">
+              <button class="nav-btn" id="btn-prev">↑ prev</button>
+              <button class="nav-btn" id="btn-next">↓ next</button>
+            </div>
+
+            <!-- Desktop keyboard hint bar -->
+            <div class="kbd-bar">
+              <div class="kbd-hint"><kbd>D</kbd> meaning</div>
+              <div class="kbd-hint"><kbd>G</kbd> done</div>
+              <div class="kbd-hint"><kbd>F</kbd> forgot</div>
+              <div class="kbd-hint"><kbd>S</kbd> reset word</div>
+              <div class="kbd-hint"><kbd>A</kbd> reset day</div>
+              <div class="kbd-hint"><kbd>↑</kbd><kbd>↓</kbd> words</div>
+              <div class="kbd-hint"><kbd>←</kbd><kbd>→</kbd> days</div>
+            </div>
+          </div>
+
+          <div class="empty-state" id="empty-state" style="display: none">
+            No words for this day.
+          </div>
+        </div>
+
+        <!-- Right: meaning sidebar -->
+        <div id="sidebar">
+          <div class="sidebar-inner">
+            <div class="sidebar-label">definition</div>
+            <div class="sidebar-word" id="sb-word"></div>
+            <div id="sb-meanings"></div>
+            <hr class="sidebar-divider" />
+            <div class="sidebar-label">word forms</div>
+            <div class="forms-section" id="sb-forms"></div>
+            <div class="status-banner" id="sb-status"></div>
+          </div>
+        </div>
+      </div>
+      <!-- /.body -->
+
+      <!-- Mobile action bar (shown only on small screens) -->
+      <div id="mobile-actions">
+        <button class="mob-btn" id="mob-meaning" title="Show meaning (D)">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+          </svg>
+          <span>Meaning</span>
+        </button>
+        <button class="mob-btn mob-done" id="mob-done" title="Mark done (G)">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          <span>Done</span>
+        </button>
+        <button
+          class="mob-btn mob-forgot"
+          id="mob-forgot"
+          title="Mark forgot (F)"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+          <span>Forgot</span>
+        </button>
+        <button
+          class="mob-btn mob-reset"
+          id="mob-reset-word"
+          title="Reset word (S)"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="1 4 1 10 7 10" />
+            <path d="M3.51 15a9 9 0 102.13-9.36L1 10" />
+          </svg>
+          <span>Reset</span>
+        </button>
+      </div>
+
+      <!-- Mobile sidebar overlay -->
+      <div id="sidebar-overlay"></div>
+    </div>
+    <!-- /#app -->
+
+    <div id="toast"></div>
+  </body>
+</html>
