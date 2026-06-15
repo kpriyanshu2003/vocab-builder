@@ -59,6 +59,7 @@ const sidebar = document.getElementById("sidebar");
 const sidebarOverlay = document.getElementById("sidebar-overlay");
 const sbWord = document.getElementById("sb-word");
 const sbMeanings = document.getElementById("sb-meanings");
+const sbExamples = document.getElementById("sb-examples");
 const sbForms = document.getElementById("sb-forms");
 const sbStatus = document.getElementById("sb-status");
 const btnPrev = document.getElementById("btn-prev");
@@ -224,6 +225,14 @@ function renderSidebar(w) {
       <div class="meaning-block">
         <div class="meaning-index">${i + 1}.</div>
         <div class="meaning-text">${m}</div>
+      </div>`;
+  });
+
+  sbExamples.innerHTML = "";
+  (w.example ?? []).forEach((ex, i) => {
+    sbExamples.innerHTML += `  <div class="meaning-block">
+        <div class="meaning-index">${i + 1}.</div>
+        <div class="meaning-text">${ex}</div>
       </div>`;
   });
 

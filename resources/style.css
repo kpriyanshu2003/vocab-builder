@@ -404,7 +404,7 @@ kbd {
 .sidebar-divider {
   border: none;
   border-top: 1px solid var(--border);
-  margin: 18px 0;
+  margin: 20px 0;
 }
 .forms-section .form-row {
   display: flex;
